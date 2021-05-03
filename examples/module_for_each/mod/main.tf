@@ -1,5 +1,5 @@
 variable "generated_input" {
-  type = map(string)
+  type = set(string)
 }
 
 resource "null_resource" "generated" {

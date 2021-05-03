@@ -15,18 +15,18 @@ provider "null" {
   # Configuration options
 }
 
-variable "inputs" {
+variable "regions" {
   type    = list(string)
   default = ["a", "b", "c"]
 }
 
-module "a" {
+module "appA" {
   source          = "./mod"
-  for_each        = toset(var.inputs)
-  generated_input = { each.key : null }
+  for_each        = toset(var.regions)
+  generated_input = toset([each.key])
 }
 
-module "b" {
+module "appB" {
   source          = "./mod"
-  generated_input = { module.a["a"].generated_output["a"].id : null }
+  generated_input = toset([module.appA["a"].generated_output["a"].id])
 }
