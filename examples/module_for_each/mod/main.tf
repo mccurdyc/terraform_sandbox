@@ -3,6 +3,7 @@ variable "generated_input" {
 }
 
 locals {
+  # motivation for this pattern came from https://github.com/terraform-google-modules/terraform-google-network/blob/d88508f7e1cb11fe6a07f503da7dc98bef58c99d/modules/routes/main.tf
   generated_input = {
     for input in var.generated_input :
     lookup(input, "region", "default") => input
