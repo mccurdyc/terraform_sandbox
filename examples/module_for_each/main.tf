@@ -16,17 +16,29 @@ provider "null" {
 }
 
 variable "regions" {
-  type    = list(string)
-  default = ["a", "b", "c"]
+  type = map(map(string))
+  default = {
+    "a" : {
+      "region" : "a",
+      "value" : "a",
+    },
+    "b" : {
+      "region" : "b",
+      "value" : "b",
+    },
+  }
 }
 
 module "appA" {
   source          = "./mod"
-  for_each        = toset(var.regions)
-  generated_input = toset([each.key])
+  generated_input = var.regions
 }
 
 module "appB" {
   source          = "./mod"
-  generated_input = toset([module.appA["a"].generated_output["a"].id])
+  generated_input = module.appA.generated_outputs
+}
+
+output "foo" {
+  value = module.appB.generated_outputs
 }
