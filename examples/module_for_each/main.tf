@@ -37,3 +37,19 @@ module "appB" {
 output "outB" {
   value = module.appB.generated_outputs
 }
+
+module "appC" {
+  source          = "./mod"
+  for_each        = var.regions
+  generated_input = module.appA.generated_outputs
+}
+
+locals {
+  cOut = { for k, v in module.appC : k => v.generated_outputs }
+}
+
+resource "null_resource" "foo" {
+  provisioner "local-exec" {
+    command = "echo ${jsonencode(local.cOut)}"
+  }
+}
